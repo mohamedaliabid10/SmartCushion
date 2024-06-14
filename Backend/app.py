@@ -10,20 +10,21 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 # InfluxDB connection details
-influxdb_url = "http://192.168.43.50:8086"
-influxdb_token = "yb0Xr3W2YuuUPwqE7SQHijWmXPuHJby-BVfPmp4ZxYw6eYaZGB_Rp0S5D3chZ-gkp9zxe2OR4o9XCkGfSg8zDA=="
+influxdb_url = "http://192.168.43.134:8087"
+influxdb_token = "IqkNTA6RHNJC8Q3O6OJXytKil_zteUXpFKP2-bw8JZKuoiZZbvgwBTV-nq-ClafVK-fHizGHrKd7xg4gHyeAjg=="
 influxdb_org = "sofrecom"
-influxdb_bucket = "sensor_test_pc"
+influxdb_bucket = "cushiondb"
 
 client = InfluxDBClient(url=influxdb_url, token=influxdb_token)
 
 
+# yakhoo data mil infux and selecting specific data
 def fetch_latest_data():
     while True:
         query = f"""
             from(bucket: "{influxdb_bucket}")
                 |> range(start: -1d)
-                |> filter(fn: (r) => r._measurement == "sensor_temp")
+                |> filter(fn: (r) => r._measurement == "sensor_dht11")
                 |> filter(fn: (r) => r._field == "humidity" or r._field == "temperature")
                 |> last()
         """
@@ -52,7 +53,7 @@ def get_latest_data():
     query = f"""
         from(bucket: "{influxdb_bucket}")
             |> range(start: -1d)
-            |> filter(fn: (r) => r._measurement == "sensor_temp")
+            |> filter(fn: (r) => r._measurement == "sensor_dht11")
             |> filter(fn: (r) => r._field == "humidity" or r._field == "temperature")
             |> last()
     """
